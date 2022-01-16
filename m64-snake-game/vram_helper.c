@@ -3,6 +3,7 @@
 //
 
 #include "vram_helper.h"
+#include <int.h>
 
 uint8_t Clear_TextTable(){
     uint8_t i, j;

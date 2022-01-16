@@ -12,7 +12,7 @@ coordinateU8_t snake_stack[MAXIMUM_SNAKE_SIZE];
 
 uint8_t start, end, size;
 
-coordinateU8_t fruit_x, fruit_y;
+uint8_t fruit_x, fruit_y;
 
 uint8_t init_snake_queue(){
     start = 0;
@@ -20,6 +20,7 @@ uint8_t init_snake_queue(){
     size = 1;
     snake_stack[start].x = 14;
     snake_stack[start].y = 15;
+    return 1;
 }
 
 uint8_t pop_snake_queue(){
@@ -28,6 +29,7 @@ uint8_t pop_snake_queue(){
         start = 0;
     }
     size -= 1;
+    return 1;
 }
 
 uint8_t push_snake_queue(uint8_t x, uint8_t y){
@@ -42,6 +44,7 @@ uint8_t push_snake_queue(uint8_t x, uint8_t y){
     }else{
         reset();
     }
+    return 1;
 }
 
 coordinateU8_t current_head_location(){
@@ -49,9 +52,10 @@ coordinateU8_t current_head_location(){
 }
 
 uint8_t check_spot_taken(uint8_t s, uint8_t x, uint8_t y){
-    for(int i = s; i < start + size; i++){
+    uint8_t i;
+    for(i = s; i < start + size; i++){
         if(start > MAXIMUM_SNAKE_SIZE){
-            if(snake_stack[i - (size-start)].x == x) && snake_stack[i - (size-start)].y == y)){
+            if(snake_stack[i - (size-start)].x == x && snake_stack[i - (size-start)].y == y){
                 return 1;
             }
         }else{
@@ -75,13 +79,13 @@ void create_fruit(){
 }
 
 uint8_t check_fruit_collision(){
-    if(snake_stack[start].x == fruit_x && snake_stack[start].y == y){
+    if(snake_stack[start].x == fruit_x && snake_stack[start].y == fruit_y){
         return 1;
     }
     return 0;
 }
 
-uint8 check_snake_collision() {
+uint8_t check_snake_collision() {
     return ((check_spot_taken(start + 1, snake_stack[start].x, snake_stack[start].y)) ||
-        snake_stack[start].x > 31 || snake_stack[start].x < 0 || snake_stack[start].y > 29 || snake_stack[start].y < 0 )
+        snake_stack[start].x > 31 || snake_stack[start].x < 0 || snake_stack[start].y > 29 || snake_stack[start].y < 0 );
 }

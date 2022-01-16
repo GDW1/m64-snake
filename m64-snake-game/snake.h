@@ -6,7 +6,7 @@
 #define IEEE_SNAKE_H
 
 #include <int.h>
-#include "vram_helper.h"
+#include "coordinate.h"
 
 uint8_t init_snake_queue();
 
@@ -20,7 +20,7 @@ uint8_t check_fruit_collision();
 
 void create_fruit();
 
-uint8 check_snake_collision();
+uint8_t check_snake_collision();
 
 uint8_t check_spot_taken(uint8_t s, uint8_t x, uint8_t y);
 
