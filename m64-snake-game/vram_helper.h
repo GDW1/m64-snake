@@ -50,6 +50,8 @@ uint8_t Fill_NameTable(uint8_t x, uint8_t y, uint8_t value);
  */
 uint8_t Clear_PatternMemory();
 
+uint8_t loadPatternValue(uint8_t value);
+
 /**
  * Keeps track of which slots in the Pattern memory are open (according to the function calls to this file
  */
