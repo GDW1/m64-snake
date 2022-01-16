@@ -1,12 +1,12 @@
 
 # Define a list of all C and Assemnbly source files
-CXX_SRC = main.c
-ASM_SRC =
-HEADERS =
+CXX_SRC = main.c pattern.c
+ASM_SRC = pattern.s
+HEADERS = pattern.h
 
 
 # List of PNG images used for patterns
-IMAGES =
+IMAGES = $(shell find patterns -name "*.png")
 
 
 # Where the intermediate-stage Assembly/object files will be saved
@@ -95,13 +95,13 @@ run ${RUN_FILES}: ${OUTPUT} ${DUMP_DIR}/vectors.bin
 # Combine the three binaries output by ld65 into one unified memory map for py65
 ${OUTPUT}: ${MEMORY_DIR}/
 	@mkdir -p ${DUMP_DIR}
-	@dd if=/dev/zero of=$@ bs=1 count=0 seek=$(shell echo "ibase=16;5000"|bc) 
+	@dd if=/dev/zero of=$@ bs=1 count=0 seek=$(shell echo "ibase=16;5000"|bc)
 	@cat ${MEMORY_DIR}/${MACHINE}_fw.bin >> $@
-	@dd if=/dev/zero of=$@ bs=1 count=0 seek=$(shell echo "ibase=16;7000"|bc) 
+	@dd if=/dev/zero of=$@ bs=1 count=0 seek=$(shell echo "ibase=16;7000"|bc)
 	@cat ${MEMORY_DIR}/${MACHINE}_io.bin >> $@
-	@dd if=/dev/zero of=$@ bs=1 count=0 seek=$(shell echo "ibase=16;8000"|bc) 
+	@dd if=/dev/zero of=$@ bs=1 count=0 seek=$(shell echo "ibase=16;8000"|bc)
 	@cat ${MEMORY_DIR}/${MACHINE}_rom.bin >> $@
-	@dd if=/dev/zero of=$@ bs=1 count=0 seek=$(shell echo "ibase=16;10000"|bc) 
+	@dd if=/dev/zero of=$@ bs=1 count=0 seek=$(shell echo "ibase=16;10000"|bc)
 	@echo "Created $@"
 
 # Build the three different binaries (ROM, FPGA ROM, IO area)
