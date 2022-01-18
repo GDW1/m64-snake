@@ -8,20 +8,23 @@
 #include <int.h>
 #include "coordinate.h"
 
-uint8_t init_snake_queue();
 
-uint8_t pop_snake_queue();
+void snake_queue_init(void);
 
-uint8_t push_snake_queue(uint8_t x, uint8_t y);
+void snake_queue_pop(void);
 
-coordinateU8_t current_head_location();
+void snake_queue_push(const coordinateS8_t * const coordinate);
 
-uint8_t check_fruit_collision();
+coordinateS8_t * get_snake_head(void);
 
-void create_fruit();
+bool snake_has_coordinate(const coordinateS8_t * const coordinate);
 
-uint8_t check_snake_collision();
+bool snake_can_move_to(const coordinateS8_t * const coordinate);
 
-uint8_t check_spot_taken(uint8_t s, uint8_t x, uint8_t y);
+
+void fruit_new(void);
+
+bool fruit_location_equals(const coordinateS8_t * const coordinate);
+
 
 #endif //IEEE_SNAKE_H

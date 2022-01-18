@@ -6,86 +6,86 @@
 #include "coordinate.h"
 #include <stdlib.h>
 #include "main.h"
+#include <vram.h>
+#include "patterns.h"
+#include "draw.h"
+
+
 #define MAXIMUM_SNAKE_SIZE ((uint8_t)(30*32))
 
-coordinateU8_t snake_stack[MAXIMUM_SNAKE_SIZE];
+coordinateS8_t snake_queue[MAXIMUM_SNAKE_SIZE];
 
-uint8_t start, end, size;
+uint8_t snake_queue_start, snake_queue_end, snake_queue_size;
 
-uint8_t fruit_x, fruit_y;
-
-uint8_t init_snake_queue(){
-    start = 0;
-    end = 1;
-    size = 1;
-    snake_stack[start].x = 14;
-    snake_stack[start].y = 15;
-    return 1;
+void snake_queue_init(void){
+    snake_queue_start = 0;
+    snake_queue_end = 1;
+    snake_queue_size = 1;
+    snake_queue[snake_queue_start].x = 14;
+    snake_queue[snake_queue_start].y = 15;
+    draw_snake_head = snake_queue[snake_queue_start];
+    draw_snake_dust.y = DRAW_OUT_OF_RANGE;
 }
 
-uint8_t pop_snake_queue(){
-    start += 1;
-    if(start == MAXIMUM_SNAKE_SIZE){
-        start = 0;
+void snake_queue_pop(void){
+    draw_snake_dust = snake_queue[snake_queue_start];
+    snake_queue_start += 1;
+    if(snake_queue_start == MAXIMUM_SNAKE_SIZE){
+        snake_queue_start = 0;
     }
-    size -= 1;
-    return 1;
+    snake_queue_size -= 1;
 }
 
-uint8_t push_snake_queue(uint8_t x, uint8_t y){
-    if(!check_spot_taken(start, x, y)){
-        snake_stack[end].x = x;
-        snake_stack[end].y = y;
-        end += 1;
-        if(end == MAXIMUM_SNAKE_SIZE){
-            end = 0;
-        }
-        size += 1;
-    }else{
-        reset();
+void snake_queue_push(const coordinateS8_t * const coordinate){
+    if (snake_queue_size==MAXIMUM_SNAKE_SIZE) return;
+    snake_queue[snake_queue_end] = (*coordinate);
+    draw_snake_head = snake_queue[snake_queue_end];
+    snake_queue_end += 1;
+    if(snake_queue_end == MAXIMUM_SNAKE_SIZE) snake_queue_end = 0;
+    snake_queue_size += 1;
+}
+
+coordinateS8_t * get_snake_head(void){
+    uint8_t head = (snake_queue_end==0)?(MAXIMUM_SNAKE_SIZE-1):(snake_queue_end-1);
+    return snake_queue + head;
+}
+
+bool snake_has_coordinate(const coordinateS8_t * const coordinate){
+    uint8_t i, k;
+    k = snake_queue_start;
+    for(i = 0; i < snake_queue_size; i++){
+        if (snake_queue[k].x == coordinate->x && snake_queue[k].y == coordinate->y)
+            return true;
+        k++;
+        if (k==MAXIMUM_SNAKE_SIZE) k = 0;
     }
-    return 1;
+    return false;
 }
 
-coordinateU8_t current_head_location(){
-    return snake_stack[start];
+bool snake_can_move_to(const coordinateS8_t * const coordinate){
+    if (snake_has_coordinate(coordinate))
+        return false;
+    if (
+        (coordinate->x<0)    || (coordinate->y<0)    ||
+        (coordinate->x>=32)  || (coordinate->y>=30)
+    )
+        return false;
+    return true;
 }
 
-uint8_t check_spot_taken(uint8_t s, uint8_t x, uint8_t y){
-    uint8_t i;
-    for(i = s; i < start + size; i++){
-        if(start > MAXIMUM_SNAKE_SIZE){
-            if(snake_stack[i - (size-start)].x == x && snake_stack[i - (size-start)].y == y){
-                return 1;
-            }
-        }else{
-            if(snake_stack[i].x == x && snake_stack[i].y == y){
-                return 1;
-            }
-        }
-    }
-    return 0;
+
+coordinateS8_t fruit;
+
+void fruit_new(void){
+    coordinateS8_t new_coordinate;
+    do {
+        new_coordinate.x = ((uint8_t)rand())%32;
+        new_coordinate.y = ((uint8_t)rand())%30;
+    } while (snake_has_coordinate(&new_coordinate));
+    fruit = new_coordinate;
+    draw_fruit = fruit;
 }
 
-void create_fruit(){
-    uint8_t rand_x = rand()%32;
-    uint8_t rand_y = rand()%30;
-    if(check_spot_taken(start, rand_x, rand_y)){
-        create_fruit();
-    }else{
-        fruit_x = rand_x;
-        fruit_y = rand_y;
-    }
-}
-
-uint8_t check_fruit_collision(){
-    if(snake_stack[start].x == fruit_x && snake_stack[start].y == fruit_y){
-        return 1;
-    }
-    return 0;
-}
-
-uint8_t check_snake_collision() {
-    return ((check_spot_taken(start + 1, snake_stack[start].x, snake_stack[start].y)) ||
-        snake_stack[start].x > 31 || snake_stack[start].x < 0 || snake_stack[start].y > 29 || snake_stack[start].y < 0 );
+bool fruit_location_equals(const coordinateS8_t * const coordinate){
+    return (fruit.x == coordinate->x) && (fruit.y == coordinate->y);
 }
