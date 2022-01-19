@@ -15,7 +15,9 @@ void snake_queue_pop(void);
 
 void snake_queue_push(const coordinateS8_t * const coordinate);
 
-coordinateS8_t * get_snake_head(void);
+coordinateS8_t * snake_get_tail(void);
+
+coordinateS8_t * snake_get_head(void);
 
 bool snake_has_coordinate(const coordinateS8_t * const coordinate);
 

@@ -21,14 +21,14 @@ void snake_queue_init(void){
     snake_queue_start = 0;
     snake_queue_end = 1;
     snake_queue_size = 1;
-    snake_queue[snake_queue_start].x = 14;
-    snake_queue[snake_queue_start].y = 15;
-    draw_snake_head = snake_queue[snake_queue_start];
+    snake_get_head()->x = 14;
+    snake_get_head()->y = 15;
+    draw_snake_head = *snake_get_head();
     draw_snake_dust.y = DRAW_OUT_OF_RANGE;
 }
 
 void snake_queue_pop(void){
-    draw_snake_dust = snake_queue[snake_queue_start];
+    draw_snake_dust = *snake_get_tail();
     snake_queue_start += 1;
     if(snake_queue_start == MAXIMUM_SNAKE_SIZE){
         snake_queue_start = 0;
@@ -39,15 +39,19 @@ void snake_queue_pop(void){
 void snake_queue_push(const coordinateS8_t * const coordinate){
     if (snake_queue_size==MAXIMUM_SNAKE_SIZE) return;
     snake_queue[snake_queue_end] = (*coordinate);
-    draw_snake_head = snake_queue[snake_queue_end];
     snake_queue_end += 1;
     if(snake_queue_end == MAXIMUM_SNAKE_SIZE) snake_queue_end = 0;
     snake_queue_size += 1;
+    draw_snake_head = *snake_get_head();
 }
 
-coordinateS8_t * get_snake_head(void){
+coordinateS8_t * snake_get_head(void){
     uint8_t head = (snake_queue_end==0)?(MAXIMUM_SNAKE_SIZE-1):(snake_queue_end-1);
     return snake_queue + head;
+}
+
+coordinateS8_t * snake_get_tail(void){
+    return snake_queue + snake_queue_start;
 }
 
 bool snake_has_coordinate(const coordinateS8_t * const coordinate){

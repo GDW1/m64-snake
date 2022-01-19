@@ -47,18 +47,18 @@ void do_logic(void) {
     }
 
     if(current_direction == CONTROLLER_LEFT_MASK){
-        new_coordniate.x = get_snake_head()->x-1;
-        new_coordniate.y = get_snake_head()->y;
+        new_coordniate.x = snake_get_head()->x-1;
+        new_coordniate.y = snake_get_head()->y;
     }else if(current_direction == CONTROLLER_RIGHT_MASK){
-        new_coordniate.x = get_snake_head()->x+1;
-        new_coordniate.y = get_snake_head()->y;
+        new_coordniate.x = snake_get_head()->x+1;
+        new_coordniate.y = snake_get_head()->y;
     }else if(current_direction == CONTROLLER_UP_MASK){
-        new_coordniate.x = get_snake_head()->x;
-        new_coordniate.y = get_snake_head()->y-1;
+        new_coordniate.x = snake_get_head()->x;
+        new_coordniate.y = snake_get_head()->y-1;
     }else if(current_direction == CONTROLLER_DOWN_MASK){
-        new_coordniate.x = get_snake_head()->x;
-        new_coordniate.y = get_snake_head()->y+1;
-    } else {
+        new_coordniate.x = snake_get_head()->x;
+        new_coordniate.y = snake_get_head()->y+1;
+    }else {
         return;
     }
 
