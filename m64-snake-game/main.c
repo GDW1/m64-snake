@@ -64,8 +64,10 @@ void do_logic(void) {
 
     if (snake_can_move_to(&new_coordniate))
         snake_queue_push(&new_coordniate);
-    else
+    else {
         reset();
+        return;
+    }
 
     if (fruit_location_equals(&new_coordniate))
         fruit_new();
