@@ -22,6 +22,7 @@
 #include "draw.h"
 
 uint8_t current_direction;
+uint8_t previous_direction;
 
 // run once on startup
 void reset(void) {
@@ -29,6 +30,7 @@ void reset(void) {
     snake_queue_init();
     fruit_new();
     current_direction = 0;
+    previous_direction = 0;
     draw_initialized = false;
 }
 
@@ -37,14 +39,19 @@ void do_logic(void) {
     coordinateS8_t new_coordniate;
 
     if(CONTROLLER_1&CONTROLLER_LEFT_MASK){
-        if (current_direction!=CONTROLLER_RIGHT_MASK)   current_direction = CONTROLLER_LEFT_MASK;
+        if (previous_direction!=CONTROLLER_RIGHT_MASK)  current_direction = CONTROLLER_LEFT_MASK;
     }else if(CONTROLLER_1&CONTROLLER_RIGHT_MASK){
-        if (current_direction!=CONTROLLER_LEFT_MASK)    current_direction = CONTROLLER_RIGHT_MASK;
+        if (previous_direction!=CONTROLLER_LEFT_MASK)   current_direction = CONTROLLER_RIGHT_MASK;
     }else if(CONTROLLER_1&CONTROLLER_UP_MASK){
-        if (current_direction!=CONTROLLER_DOWN_MASK)    current_direction = CONTROLLER_UP_MASK;
+        if (previous_direction!=CONTROLLER_DOWN_MASK)   current_direction = CONTROLLER_UP_MASK;
     }else if(CONTROLLER_1&CONTROLLER_DOWN_MASK){
-        if (current_direction!=CONTROLLER_UP_MASK)      current_direction = CONTROLLER_DOWN_MASK;
+        if (previous_direction!=CONTROLLER_UP_MASK)     current_direction = CONTROLLER_DOWN_MASK;
     }
+
+    // FPS Controller
+    if ( (FRAME & 0xf) != 0) return;
+
+    previous_direction = current_direction;
 
     if(current_direction == CONTROLLER_LEFT_MASK){
         new_coordniate.x = snake_get_head()->x-1;
